@@ -13,6 +13,8 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.NotDirectoryException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -25,22 +27,23 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        File imageFile = new File("/home/ricky/Pictures/Screenshots/bottomup.png");
-        Image image = new Image(imageFile.toURI().toString());
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(100);
-        imageView.setFitWidth(100);
-        imageView.setPreserveRatio(true);
+        ArrayList<Screenshot> screenshots = new ArrayList<>();
 
-        File imageFile2 = new File("/home/ricky/Pictures/Screenshots/couplingspectrum.png");
-        Image image2 = new Image(imageFile2.toURI().toString());
-        ImageView imageView2 = new ImageView(image2);
-        imageView2.setFitHeight(100);
-        imageView2.setFitWidth(100);
-        imageView2.setPreserveRatio(true);
+        try {
+            screenshots = ScreenshotUtil.getScreenshots("/home/ricky/Pictures/Screenshots");
+        } catch (NotDirectoryException notDirectoryException) {
+            // show a pop up error here or something
+        }
 
-        mainContentPane.getChildren().add(imageView);
-        mainContentPane.getChildren().add(imageView2);
+        for (Screenshot screenshot : screenshots) {
+            File imageFile = new File(screenshot.getUrl());
+            Image image = new Image(imageFile.toURI().toString());
+            ImageView imageView = new ImageView(image);
+            imageView.setFitHeight(100);
+            imageView.setFitWidth(100);
+            imageView.setPreserveRatio(true);
+            mainContentPane.getChildren().add(imageView);
+        }
     }
 
     public void onLeftSideButtonClicked(MouseEvent mouseEvent) {
