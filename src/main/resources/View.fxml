@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Controller"
-            prefHeight="400.0" prefWidth="600.0">
+<?import java.net.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <stylesheets>
+      <URL value="@styles.css" />
+   </stylesheets>
+   <children>
+      <Pane id="leftSidePane" fx:id="leftSidePane" prefHeight="800.0" prefWidth="250.0" styleClass="leftSidePane" stylesheets="@styles.css">
+         <children>
+            <VBox fx:id="menuVBox" layoutX="10.0" layoutY="10.0" prefHeight="171.0" prefWidth="230.0" />
+         </children></Pane>
+      <Rectangle id="leftSideButton" fx:id="leftSideButton" arcHeight="5.0" arcWidth="5.0" fill="#c6c6c6" height="100.0" layoutX="230.0" layoutY="373.0" onMouseClicked="#onLeftSideButtonClicked" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="leftSideButton" width="8.0" />
+   </children>
 </AnchorPane>
