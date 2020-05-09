@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
-   <stylesheets>
-      <URL value="@styles.css" />
-   </stylesheets>
-   <children>
-      <Pane id="leftSidePane" fx:id="leftSidePane" prefHeight="800.0" prefWidth="250.0" styleClass="leftSidePane" stylesheets="@styles.css">
-         <children>
-            <VBox fx:id="menuVBox" layoutX="10.0" layoutY="10.0" prefHeight="171.0" prefWidth="230.0" />
-         </children></Pane>
-      <Rectangle id="leftSideButton" fx:id="leftSideButton" arcHeight="5.0" arcWidth="5.0" fill="#c6c6c6" height="100.0" layoutX="230.0" layoutY="373.0" onMouseClicked="#onLeftSideButtonClicked" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="leftSideButton" width="8.0" />
-   </children>
+    <stylesheets>
+        <URL value="@styles.css" />
+    </stylesheets>
+    <children>
+        <Pane id="leftSidePane" fx:id="leftSidePane" prefHeight="800.0" prefWidth="250.0" styleClass="leftSidePane" stylesheets="@styles.css">
+        </Pane>
+        <Rectangle id="leftSideButton" fx:id="leftSideButton" arcHeight="5.0" arcWidth="5.0" fill="#c6c6c6" height="100.0" layoutX="230.0" layoutY="373.0" onMouseClicked="#onLeftSideButtonClicked" onMouseEntered="#onLeftSideButtonEntered" onMouseExited="#onLeftSideButtonExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="leftSideButton" width="8.0" />
+      <FlowPane id="mainContentPane" fx:id="mainContentPane" hgap="10.0" layoutX="250.0" prefHeight="800.0" prefWidth="750.0" styleClass="mainContentPane" stylesheets="@styles.css" vgap="10.0">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets></FlowPane>
+    </children>
 </AnchorPane>

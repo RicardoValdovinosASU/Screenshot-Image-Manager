@@ -1,7 +1,11 @@
 .leftSidePane {
-    -fx-background-color: darkgray;
+    -fx-background-color: gray;
 }
 
 .leftSideButton {
     -fx-background-color: lightgray;
+}
+
+.mainContentPane {
+    -fx-background-color: darkgray;
 }
