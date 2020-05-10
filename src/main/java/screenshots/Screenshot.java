@@ -1,3 +1,5 @@
+package screenshots;
+
 public class Screenshot {
     private String url;
 

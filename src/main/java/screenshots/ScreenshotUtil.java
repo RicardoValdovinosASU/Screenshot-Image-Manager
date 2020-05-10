@@ -1,3 +1,5 @@
+package screenshots;
+
 import java.io.File;
 import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
