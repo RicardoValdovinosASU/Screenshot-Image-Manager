@@ -9,3 +9,7 @@
 .mainContentPane {
     -fx-background-color: darkgray;
 }
+
+.mainContentScroll {
+    -fx-focus-color: TRANSPARENT;
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.LeftSideBarViewController"
+            prefHeight="400.0" prefWidth="600.0">
+    <Pane id="leftSidePane" fx:id="leftSidePane" prefHeight="800.0" prefWidth="250.0" styleClass="leftSidePane"
+          stylesheets="@../styles/styles.css">
+    </Pane>
+    <Rectangle id="leftSideButton" fx:id="leftSideButton" arcHeight="5.0" arcWidth="5.0" fill="#c6c6c6" height="100.0"
+               layoutX="230.0" layoutY="373.0" onMouseClicked="#onLeftSideButtonClicked"
+               onMouseEntered="#onLeftSideButtonEntered" onMouseExited="#onLeftSideButtonExited" stroke="BLACK"
+               strokeType="INSIDE" strokeWidth="0.0" styleClass="leftSideButton" width="8.0"/>
+
+</AnchorPane>
