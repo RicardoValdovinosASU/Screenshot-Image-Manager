@@ -24,6 +24,7 @@ public class Controller implements Initializable {
     private boolean isLeftHidden = false;
     private static final int TRANSITION_SPEED = 100;
     private static final int BUTTON_OFFSET = 20;
+    ArrayList<ImageView> imageViewArrayList = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
