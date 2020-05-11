@@ -1,9 +1,12 @@
 package controllers;
 
 import javafx.fxml.Initializable;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
@@ -24,6 +27,8 @@ public class MainContentController implements Initializable {
     private static final double SCROLL_SPEED = 0.0005;
     public FlowPane mainContentFlowPane;
     public ScrollPane mainContentScrollPane;
+    private ContextMenu contextMenu;
+    private ArrayList<Screenshot> selectedScreenshots = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -43,6 +48,9 @@ public class MainContentController implements Initializable {
             double deltaY = scrollEvent.getDeltaY() * SCROLL_SPEED;
             mainContentScrollPane.setVvalue(mainContentScrollPane.getVvalue() - deltaY);
         });
+
+        // initialize context menu
+        contextMenu = createContextMenu();
     }
 
     private ArrayList<Screenshot> getContent() {
@@ -62,9 +70,26 @@ public class MainContentController implements Initializable {
                 Image image = new Image(imageFile.toURI().toString());
                 ImageView imageView = setImageView(image);
                 BorderPane borderPane = setImageViewBackground(imageView);
-                borderPane.addEventHandler(MouseEvent.MOUSE_CLICKED, (mouseClicked) -> {
-                    System.out.println("Clicked: " + screenshot.getName());
+                borderPane.addEventHandler(MouseEvent.MOUSE_CLICKED, (mouseEvent) -> {
+                    if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                        contextMenu.show(borderPane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+                    }
+
+                    if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.isControlDown()) {
+                        selectedScreenshots.add(screenshot);
+                    } else if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                        selectedScreenshots.clear();
+                        selectedScreenshots.add(screenshot);
+                        if (mouseEvent.getClickCount() == 1) {
+                            // update info in side panels
+                        }
+
+                        if (mouseEvent.getClickCount() == 2) {
+                            // open window to show enlarged view of image
+                        }
+                    }
                 });
+
                 mainContentFlowPane.getChildren().add(borderPane);
             }
         } else {
@@ -87,4 +112,34 @@ public class MainContentController implements Initializable {
         return borderPane;
     }
 
+    private ContextMenu createContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem menuItem1 = new MenuItem("menu item 1");
+        menuItem1.setOnAction((actionEvent) -> {
+            System.out.println("menu item 1 clicked");
+            System.out.println("selected amount: " + selectedScreenshots.size());
+        });
+
+        MenuItem menuItem2 = new MenuItem("menu item 2");
+        menuItem2.setOnAction((actionEvent) -> {
+            System.out.println("menu item 2 clicked");
+            System.out.println("selected amount: " + selectedScreenshots.size());
+        });
+
+        MenuItem menuItem3 = new MenuItem("menu item 3");
+        menuItem3.setOnAction((actionEvent) -> {
+            System.out.println("menu item 3 clicked");
+            System.out.println("selected amount: " + selectedScreenshots.size());
+        });
+
+        MenuItem menuItem4 = new MenuItem("menu item 4");
+        menuItem4.setOnAction((actionEvent) -> {
+            System.out.println("menu item 4 clicked");
+            System.out.println("selected amount: " + selectedScreenshots.size());
+        });
+
+        contextMenu.getItems().addAll(menuItem1, menuItem2, menuItem3, menuItem4);
+        return contextMenu;
+    }
 }
