@@ -22,7 +22,7 @@ public class ScreenshotUtil {
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 if (getFileExtension(child).equals("png")) {
-                    screenshots.add(new Screenshot(child.getAbsolutePath()));
+                    screenshots.add(new Screenshot(child.toURI().toString()));
                 }
             }
         }

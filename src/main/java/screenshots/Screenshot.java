@@ -1,21 +1,24 @@
 package screenshots;
 
-public class Screenshot {
-    private String url;
+import javafx.scene.image.Image;
+
+public class Screenshot extends Image {
+    private String location;
     private String name;
 
-    public Screenshot(String url) {
-        this.url = url;
-        String[] splitUrl = url.split("/");
-        this.name = splitUrl[splitUrl.length - 1];
+    public Screenshot(String location) {
+        super(location);
+        this.location = location;
+        String[] splitLocation = location.split("/");
+        this.name = splitLocation[splitLocation.length - 1];
     }
 
-    public String getUrl() {
-        return url;
+    public String getLocation() {
+        return location;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getName() {
