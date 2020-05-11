@@ -4,15 +4,14 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainContentController">
     <stylesheets>
         <URL value="@../styles/styles.css" />
     </stylesheets>
     <children>
-        <ScrollPane fx:id="mainContentScrollPane" layoutX="250.0" prefHeight="800.0" prefWidth="750.0" styleClass="mainContentScroll" stylesheets="@../styles/styles.css">
-            <FlowPane id="mainContentPane" fx:id="mainContentFlowPane" hgap="10.0" layoutX="250.0" prefHeight="800.0" prefWidth="750.0" styleClass="mainContentPane" stylesheets="@../styles/styles.css" vgap="10.0">
+        <ScrollPane id="mainContentScrollPane" fx:id="mainContentScrollPane" layoutX="250.0" prefHeight="800.0" prefWidth="750.0" styleClass="mainContentScrollPane" stylesheets="@../styles/styles.css">
+            <FlowPane id="mainContentFlowPane" fx:id="mainContentFlowPane" layoutX="250.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="750.0" styleClass="mainContentFlowPane" stylesheets="@../styles/styles.css">
                 <opaqueInsets>
                     <Insets />
                 </opaqueInsets>
