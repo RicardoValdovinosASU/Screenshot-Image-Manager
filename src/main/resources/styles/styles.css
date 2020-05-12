@@ -1,11 +1,3 @@
-.leftSidePane {
-    -fx-background-color: gray;
-}
-
-.leftSideButton {
-    -fx-background-color: lightgray;
-}
-
 .mainContentFlowPane {
     -fx-background-color: darkgray;
     -fx-focus-color: TRANSPARENT;
