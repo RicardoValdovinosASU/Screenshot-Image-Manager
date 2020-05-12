@@ -1,3 +1,11 @@
+.leftSidePane {
+    -fx-background-color: gray;
+}
+
+.leftSideButton {
+    -fx-background-color: lightgray;
+}
+
 .mainContentFlowPane {
     -fx-background-color: darkgray;
     -fx-focus-color: TRANSPARENT;
@@ -5,4 +13,12 @@
 
 .mainContentScrollPane {
     -fx-focus-color: TRANSPARENT;
+}
+
+.rightSidePane {
+    -fx-background-color: gray;
+}
+
+.rightSideButton {
+    -fx-background-color: lightgray;
 }
