@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="250.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="modals.ScreenshotGroupModal">
+   <children>
+      <Label layoutX="14.0" layoutY="117.0" text="Group name: " />
+      <TextField fx:id="groupNameTextField" layoutX="104.0" layoutY="112.0" onKeyPressed="#onGroupNameTextFieldKeyPressed" />
+      <HBox alignment="CENTER" layoutX="14.0" layoutY="138.0" prefHeight="42.0" prefWidth="262.0" spacing="20.0">
+         <children>
+            <Button fx:id="CancelButton" mnemonicParsing="false" onAction="#onCancelButtonClicked" text="Cancel" />
+            <Button fx:id="EnterButton" mnemonicParsing="false" onAction="#onEnterButtonClicked" text="Enter" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

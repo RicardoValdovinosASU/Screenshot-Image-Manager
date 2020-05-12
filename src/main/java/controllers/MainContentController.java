@@ -1,26 +1,34 @@
 package controllers;
 
+import groups.ScreenshotGroup;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import modals.PreviewModal;
+import modals.ScreenshotGroupModal;
 import screenshots.Screenshot;
 import screenshots.ScreenshotImageView;
 import screenshots.ScreenshotUtil;
 import utils.Utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 
 public class MainContentController implements Initializable {
     public FlowPane mainContentFlowPane;
@@ -68,67 +76,86 @@ public class MainContentController implements Initializable {
         return screenshots;
     }
 
+    // TODO: only showing 180/353 images
     private void populateContentArea(ArrayList<Screenshot> content) {
         if (content != null) {
             for (Screenshot screenshot : content) {
-                ScreenshotImageView screenshotImageView = setImageView(screenshot);
-                allScreenshots.add(screenshotImageView);
-                BorderPane borderPane = setImageViewBackground(screenshotImageView);
+                BorderPane borderPane = createScreenshotIcon(screenshot);
 
-                // handle clicks
-                borderPane.addEventHandler(MouseEvent.MOUSE_CLICKED, (mouseEvent) -> {
-                    // right click
-                    if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                        contextMenu.show(borderPane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
-                    }
-
-                    // left click
-                    // control + click
-                    if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.isControlDown()) {
-                        screenshotImageView.setOpacity(0.5);
-                        selectedScreenshots.add(screenshotImageView);
-                    } else if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.isShiftDown()) {
-                        clearSelectedImageViews();
-                        secondShiftClick = allScreenshots.indexOf(screenshotImageView);
-                        if (initialShiftClick < secondShiftClick) {
-                            for (int i = initialShiftClick; i <= secondShiftClick; i++) {
-                                allScreenshots.get(i).setOpacity(0.5);
-                                selectedScreenshots.add(allScreenshots.get(i));
-                            }
-                        } else {
-                            for (int i = secondShiftClick; i <= initialShiftClick; i++) {
-                                allScreenshots.get(i).setOpacity(0.5);
-                                selectedScreenshots.add(allScreenshots.get(i));
-                            }
-                        }
-                    } else if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) { // normal left click
-                        initialShiftClick = allScreenshots.indexOf(screenshotImageView);
-                        if (mouseEvent.getClickCount() == 1) {
-                            // if image is currently selected, deselect it otherwise select it.
-                            if (selectedScreenshots.contains(screenshotImageView)) {
-                                screenshotImageView.setOpacity(1);
-                                clearSelectedImageViews();
-                            } else {
-                                clearSelectedImageViews();
-                                screenshotImageView.setOpacity(0.5);
-                                selectedScreenshots.add(screenshotImageView);
-                            }
-                            // TODO: update info in side panels
-                        }
-
-                        if (mouseEvent.getClickCount() == 2) {
-                            selectedScreenshots.add(screenshotImageView);
-                            PreviewModal.showPreview(screenshot);
-                            // TODO: open window to show enlarged view of image
-                        }
-                    }
-                });
+                clickHandler(borderPane, (ScreenshotImageView) borderPane.getCenter());
 
                 mainContentFlowPane.getChildren().add(borderPane);
             }
         } else {
             // TODO: show a pop up error here or something
         }
+    }
+
+    private void clickHandler(BorderPane borderPane, ScreenshotImageView screenshotImageView) {
+        borderPane.addEventHandler(MouseEvent.MOUSE_CLICKED, (mouseEvent) -> {
+            rightClickHandler(mouseEvent, borderPane, screenshotImageView);
+
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.isControlDown()) {
+                controlClickHandler(mouseEvent, borderPane, screenshotImageView);
+            } else if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.isShiftDown()) {
+                shiftClickHandler(mouseEvent, borderPane, screenshotImageView);
+            } else if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) { // normal left click
+                singleClickHandler(mouseEvent, borderPane, screenshotImageView);
+
+                if (mouseEvent.getClickCount() == 2) {
+                    doubleClickHandler(mouseEvent, borderPane, screenshotImageView);
+                }
+            }
+        });
+    }
+
+    private void rightClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
+        if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+            contextMenu.show(borderPane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+        }
+    }
+
+    private void controlClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
+        screenshotImageView.setOpacity(0.5);
+        selectedScreenshots.add(screenshotImageView);
+    }
+
+    private void shiftClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
+        clearSelectedImageViews();
+        secondShiftClick = allScreenshots.indexOf(screenshotImageView);
+        if (initialShiftClick < secondShiftClick) {
+            for (int i = initialShiftClick; i <= secondShiftClick; i++) {
+                allScreenshots.get(i).setOpacity(0.5);
+                selectedScreenshots.add(allScreenshots.get(i));
+            }
+        } else {
+            for (int i = secondShiftClick; i <= initialShiftClick; i++) {
+                allScreenshots.get(i).setOpacity(0.5);
+                selectedScreenshots.add(allScreenshots.get(i));
+            }
+        }
+        System.out.println(selectedScreenshots.size());
+    }
+
+    private void singleClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
+        initialShiftClick = allScreenshots.indexOf(screenshotImageView);
+        if (mouseEvent.getClickCount() == 1) {
+            // if image is currently selected, deselect it otherwise select it.
+            if (selectedScreenshots.contains(screenshotImageView)) {
+                screenshotImageView.setOpacity(1);
+                clearSelectedImageViews();
+            } else {
+                clearSelectedImageViews();
+                screenshotImageView.setOpacity(0.5);
+                selectedScreenshots.add(screenshotImageView);
+            }
+            // TODO: update info in side panels
+        }
+    }
+
+    private void doubleClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
+        selectedScreenshots.add(screenshotImageView);
+        PreviewModal.showPreview(screenshotImageView.getScreenshot());
     }
 
     private void clearSelectedImageViews() {
@@ -166,24 +193,52 @@ public class MainContentController implements Initializable {
         return borderPane;
     }
 
-    // TODO: add actual functionality for the menu options
+    public BorderPane createScreenshotIcon(Screenshot screenshot) {
+        ScreenshotImageView screenshotImageView = setImageView(screenshot);
+        allScreenshots.add(screenshotImageView);
+        return setImageViewBackground(screenshotImageView);
+    }
+
     private ContextMenu createContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
 
-        MenuItem menuItem1 = new MenuItem("menu item 1");
-        menuItem1.setOnAction((actionEvent) -> {
-            System.out.println("menu item 1 clicked");
-            System.out.println("selected amount: " + selectedScreenshots.size());
+        MenuItem createEmptyGroup = new MenuItem("Create empty group");
+        createEmptyGroup.setOnAction((actionEvent) -> {
+            String resource = "views/ScreenshotGroupModalView.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(resource));
+            showScreenshotGroupModal(loader);
+            ScreenshotGroupModal modal = loader.getController();
+            String groupName = modal.getGroupName();
+            if (groupName != null) {
+                ScreenshotGroup screenshotGroup = new ScreenshotGroup(groupName);
+                File file = new File("/home/ricky/Documents/programming/java/Intellij-Projects/Screenshot-Image-Manager/src/main/resources/assets/groups.png");
+                ImageView imageView = new ImageView(new Image(file.toURI().toString()));
+                mainContentFlowPane.getChildren().add(new BorderPane(imageView));
+            } else {
+                // TODO: show a pop up error here or something
+            }
         });
 
-        MenuItem menuItem2 = new MenuItem("menu item 2");
-        menuItem2.setOnAction((actionEvent) -> {
-            System.out.println("menu item 2 clicked");
-            System.out.println("selected amount: " + selectedScreenshots.size());
+        MenuItem createGroupFromSelected = new MenuItem("Create group from selected");
+        createGroupFromSelected.setOnAction((actionEvent) -> {
+            String resource = "views/ScreenshotGroupModalView.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(resource));
+            showScreenshotGroupModal(loader);
+            ScreenshotGroupModal modal = loader.getController();
+            String groupName = modal.getGroupName();
+            if (groupName != null) {
+                ScreenshotGroup screenshotGroup = new ScreenshotGroup(groupName, selectedScreenshots);
+                for (ScreenshotImageView s: screenshotGroup.getGroupScreenshotImageViews()) {
+                    System.out.println(s.getScreenshot().getName());
+                }
+            } else {
+                // TODO: show a pop up error here or something
+            }
         });
 
-        MenuItem menuItem3 = new MenuItem("menu item 3");
-        menuItem3.setOnAction((actionEvent) -> {
+        // TODO: create sub menu listing the available groups
+        MenuItem addSelectionsToGroup = new MenuItem("Add selections to group");
+        addSelectionsToGroup.setOnAction((actionEvent) -> {
             System.out.println("menu item 3 clicked");
             System.out.println("selected amount: " + selectedScreenshots.size());
         });
@@ -194,8 +249,21 @@ public class MainContentController implements Initializable {
             System.out.println("selected amount: " + selectedScreenshots.size());
         });
 
-        contextMenu.getItems().addAll(menuItem1, menuItem2, menuItem3, menuItem4);
+        contextMenu.getItems().addAll(createEmptyGroup, createGroupFromSelected, addSelectionsToGroup, menuItem4);
         return contextMenu;
+    }
+
+    private void showScreenshotGroupModal(FXMLLoader loader) {
+        Stage stage = new Stage();
+        AnchorPane root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 
     /* Left Sidebar */
