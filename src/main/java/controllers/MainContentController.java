@@ -79,10 +79,21 @@ public class MainContentController implements Initializable {
                         screenshotImageView.setOpacity(0.5);
                         selectedScreenshots.add(screenshotImageView);
                     } else if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.isShiftDown()) {
-                        // TODO: come up with an algorithm to get shift clicking to work.
-                        System.out.println("shift clicking");
+                        clearSelectedImageViews();
+                        secondShiftClick = allScreenshots.indexOf(screenshotImageView);
+                        if (initialShiftClick < secondShiftClick) {
+                            for (int i = initialShiftClick; i <= secondShiftClick; i++) {
+                                allScreenshots.get(i).setOpacity(0.5);
+                                selectedScreenshots.add(allScreenshots.get(i));
+                            }
+                        } else {
+                            for (int i = secondShiftClick; i <= initialShiftClick; i++) {
+                                allScreenshots.get(i).setOpacity(0.5);
+                                selectedScreenshots.add(allScreenshots.get(i));
+                            }
+                        }
                     } else if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) { // normal left click
-
+                        initialShiftClick = allScreenshots.indexOf(screenshotImageView);
                         if (mouseEvent.getClickCount() == 1) {
                             // if image is currently selected, deselect it otherwise select it.
                             if (selectedScreenshots.contains(screenshotImageView)) {
