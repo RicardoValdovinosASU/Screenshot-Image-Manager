@@ -4,7 +4,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
 public class ScreenshotUtil {
@@ -22,7 +27,13 @@ public class ScreenshotUtil {
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 if (getFileExtension(child).equals("png")) {
-                    screenshots.add(new Screenshot(child.toURI().toString()));
+                    Screenshot screenshot = new Screenshot(child.toURI().toString());
+                    try {
+                        screenshot.setBasicFileAttributes(Files.readAttributes(Path.of(child.toURI()), BasicFileAttributes.class));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    screenshots.add(screenshot);
                 }
             }
         }
