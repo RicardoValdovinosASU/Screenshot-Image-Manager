@@ -4,12 +4,21 @@ import screenshots.ScreenshotImageView;
 
 import java.util.ArrayList;
 
+// TODO: Consider extending ArrayList
 public class ScreenshotGroup {
     private ArrayList<ScreenshotImageView> groupScreenshotImageViews;
     private String name;
 
     public ScreenshotGroup(String name) {
         this.name = name;
+    }
+
+    public void add(ScreenshotImageView screenshotImageView) {
+        groupScreenshotImageViews.add(screenshotImageView);
+    }
+
+    public ScreenshotImageView get(int index) {
+        return groupScreenshotImageViews.get(index);
     }
 
     public ScreenshotGroup(String name, ArrayList<ScreenshotImageView> groupScreenshotImageViews) {
