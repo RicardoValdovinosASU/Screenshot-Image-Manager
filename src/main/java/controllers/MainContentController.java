@@ -1,8 +1,11 @@
 package controllers;
 
+import eventhandlers.GroupClickEvent;
+import groups.GroupImageView;
 import groups.ScreenshotGroup;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -27,16 +30,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainContentController implements Initializable {
-    public FlowPane mainContentFlowPane;
-    public ScrollPane mainContentScrollPane;
-    private ContextMenu contextMenu;
-    private ArrayList<ScreenshotImageView> allScreenshots = new ArrayList<>();
-    private ArrayList<ScreenshotImageView> selectedScreenshots = new ArrayList<>();
-    private int initialShiftClick, secondShiftClick, shiftClickCount = 0;
     private static final int FLOW_PANE_COLUMN_SIZE = 10;
     private static final int FLOW_PANE_ROW_SIZE = 5;
     private static final int IMAGE_WIDTH = 150;
@@ -44,9 +40,22 @@ public class MainContentController implements Initializable {
     private static final double SCROLL_SPEED = 0.0005;
     private static final int TRANSITION_SPEED = 500;
     private static final int BUTTON_OFFSET = 20;
+    private static final String ASSETS_PATH = "/home/ricky/Documents/programming/java/Intellij-Projects/Screenshot-Image-Manager/src/main/resources/assets/";
+    public FlowPane mainContentFlowPane;
+    public ScrollPane mainContentScrollPane;
+    /* Left Sidebar */
+    public Pane leftSidePane;
+    public Rectangle leftSideButton;
+    /* Right Sidebar */
+    public Pane rightSidePane;
+    public Rectangle rightSideButton;
+    private ContextMenu contextMenu;
+    private final ArrayList<ScreenshotImageView> allScreenshots = new ArrayList<>();
+    private final ArrayList<ScreenshotImageView> selectedScreenshots = new ArrayList<>();
+    private final ArrayList<ScreenshotGroup> allGroups = new ArrayList<>();
+    private int initialShiftClick;
     private boolean isLeftSideBarHidden = false;
     private boolean isRightSideBarHidden = false;
-
 
     /* Main Content */
     @Override
@@ -122,7 +131,7 @@ public class MainContentController implements Initializable {
 
     private void shiftClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
         clearSelectedImageViews();
-        secondShiftClick = allScreenshots.indexOf(screenshotImageView);
+        int secondShiftClick = allScreenshots.indexOf(screenshotImageView);
         if (initialShiftClick < secondShiftClick) {
             for (int i = initialShiftClick; i <= secondShiftClick; i++) {
                 allScreenshots.get(i).setOpacity(0.5);
@@ -148,9 +157,18 @@ public class MainContentController implements Initializable {
                 clearSelectedImageViews();
                 screenshotImageView.setOpacity(0.5);
                 selectedScreenshots.add(screenshotImageView);
+                displayInfo(screenshotImageView);
             }
             // TODO: update info in side panels
         }
+    }
+
+    private void displayInfo(ScreenshotImageView screenshotImageView) {
+        Screenshot screenshot = screenshotImageView.getScreenshot();
+        System.out.println("name: " + screenshot.getName());
+        System.out.println("Location: " + screenshot.getLocation());
+        System.out.println("Date Created: " + screenshot.getDateCreated());
+        System.out.println("Last Modified: " + screenshot.getLastModified());
     }
 
     private void doubleClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
@@ -199,21 +217,49 @@ public class MainContentController implements Initializable {
         return setImageViewBackground(screenshotImageView);
     }
 
+    private GroupImageView createGroupImageView(String path, String name) {
+        File file = new File(path);
+        GroupImageView groupImageView = new GroupImageView(new Image(file.toURI().toString()));
+        groupImageView.setName(name);
+        groupImageView.setFitWidth(IMAGE_WIDTH);
+        groupImageView.setFitHeight(IMAGE_HEIGHT);
+        groupImageView.setPreserveRatio(true);
+        return groupImageView;
+    }
+
+    private void addGroupToContent(ImageView groupImageView) {
+        mainContentFlowPane.getChildren().clear();
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(groupImageView);
+        addListenersToGroup(borderPane);
+        mainContentFlowPane.getChildren().add(borderPane);
+        ArrayList<Screenshot> temp = new ArrayList<>();
+        for (ScreenshotImageView screenshotImageView : allScreenshots) {
+            temp.add(screenshotImageView.getScreenshot());
+        }
+        allScreenshots.clear();
+        populateContentArea(temp);
+        temp.clear();
+    }
+
+    private void addListenersToGroup(BorderPane borderPane) {
+        GroupClickEvent.borderPaneClickHandler(borderPane);
+    }
+
     private ContextMenu createContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem createEmptyGroup = new MenuItem("Create empty group");
         createEmptyGroup.setOnAction((actionEvent) -> {
-            String resource = "views/ScreenshotGroupModalView.fxml";
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(resource));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("views/ScreenshotGroupModalView.fxml"));
             showScreenshotGroupModal(loader);
             ScreenshotGroupModal modal = loader.getController();
             String groupName = modal.getGroupName();
             if (groupName != null) {
                 ScreenshotGroup screenshotGroup = new ScreenshotGroup(groupName);
-                File file = new File("/home/ricky/Documents/programming/java/Intellij-Projects/Screenshot-Image-Manager/src/main/resources/assets/groups.png");
-                ImageView imageView = new ImageView(new Image(file.toURI().toString()));
-                mainContentFlowPane.getChildren().add(new BorderPane(imageView));
+                GroupImageView groupImageView = createGroupImageView(ASSETS_PATH + "groups.png", screenshotGroup.getName());
+                addGroupToContent(groupImageView);
+                allGroups.add(screenshotGroup);
             } else {
                 // TODO: show a pop up error here or something
             }
@@ -228,7 +274,10 @@ public class MainContentController implements Initializable {
             String groupName = modal.getGroupName();
             if (groupName != null) {
                 ScreenshotGroup screenshotGroup = new ScreenshotGroup(groupName, selectedScreenshots);
-                for (ScreenshotImageView s: screenshotGroup.getGroupScreenshotImageViews()) {
+                GroupImageView groupImageView = createGroupImageView(ASSETS_PATH + "groups.png", screenshotGroup.getName());
+                addGroupToContent(groupImageView);
+                // for testing purposes
+                for (ScreenshotImageView s : screenshotGroup.getGroupScreenshotImageViews()) {
                     System.out.println(s.getScreenshot().getName());
                 }
             } else {
@@ -266,10 +315,6 @@ public class MainContentController implements Initializable {
         stage.showAndWait();
     }
 
-    /* Left Sidebar */
-    public Pane leftSidePane;
-    public Rectangle leftSideButton;
-
     public void onLeftSideButtonClicked(MouseEvent mouseEvent) {
         double leftSidePaneHiddenPosition = (leftSidePane.getLayoutX() - leftSidePane.getWidth()) + (leftSidePane.getWidth() * 0.25);
         double leftSideButtonHiddenPosition = leftSidePaneHiddenPosition - BUTTON_OFFSET;
@@ -293,10 +338,6 @@ public class MainContentController implements Initializable {
     public void onLeftSideButtonExited(MouseEvent mouseEvent) {
         leftSideButton.fillProperty().setValue(Paint.valueOf("c6c6c6"));
     }
-
-    /* Right Sidebar */
-    public Pane rightSidePane;
-    public Rectangle rightSideButton;
 
     public void onRightSideButtonClicked(MouseEvent mouseEvent) {
         double rightSidePaneHiddenPosition = rightSidePane.getWidth() - (rightSidePane.getWidth() * 0.25);
