@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.geometry.Insets?>
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainContentController">
     <stylesheets>
         <URL value="@../styles/styles.css" />
@@ -29,6 +29,15 @@
 
     <!--Right Sidebar -->
     <Pane id="rightSidePane" fx:id="rightSidePane" layoutX="1000" prefHeight="800.0" prefWidth="250.0" styleClass="rightSidePane" stylesheets="@../styles/styles.css">
-    </Pane>
+      <children>
+         <Label layoutX="15.0" layoutY="15.0" text="Name: " />
+         <TextField fx:id="screenshotNameTextField" layoutX="65.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" />
+         <Label fx:id="locationLabel" layoutX="15.0" layoutY="50.0" text="Location: " />
+         <Label fx:id="dateCreatedLabel" layoutX="15.0" layoutY="118.0" text="Date Created: " />
+         <Label fx:id="lastModifiedLabel" layoutX="14.0" layoutY="170.0" text="Last Modified: " />
+         <Label fx:id="screenshotLocationLabel" layoutX="79.0" layoutY="50.0" minHeight="48.0" />
+         <Label fx:id="screenshotCreatedLabel" layoutX="109.0" layoutY="118.0" />
+         <Label fx:id="screenshotLastModifiedLabel" layoutX="110.0" layoutY="180.0" />
+      </children></Pane>
     <Rectangle id="rightSideButton" fx:id="rightSideButton" arcHeight="5.0" arcWidth="5.0" fill="#c6c6c6" height="100.0" layoutX="1020.0" layoutY="373.0" onMouseClicked="#onRightSideButtonClicked" onMouseEntered="#onRightSideButtonEntered" onMouseExited="#onRightSideButtonExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="rightSideButton" width="8.0" />
 </AnchorPane>
