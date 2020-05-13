@@ -7,9 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -49,6 +47,13 @@ public class MainContentController implements Initializable {
     /* Right Sidebar */
     public Pane rightSidePane;
     public Rectangle rightSideButton;
+    public TextField screenshotNameTextField;
+    public Label screenshotLocationLabel;
+    public Label screenshotCreatedLabel;
+    public Label screenshotLastModifiedLabel;
+    public Label locationLabel;
+    public Label dateCreatedLabel;
+    public Label lastModifiedLabel;
     private ContextMenu contextMenu;
     private final ArrayList<ScreenshotImageView> allScreenshots = new ArrayList<>();
     private final ArrayList<ScreenshotImageView> selectedScreenshots = new ArrayList<>();
@@ -163,12 +168,29 @@ public class MainContentController implements Initializable {
         }
     }
 
+    // TODO: get labels to automatically move depending on the amount of text.
     private void displayInfo(ScreenshotImageView screenshotImageView) {
         Screenshot screenshot = screenshotImageView.getScreenshot();
-        System.out.println("name: " + screenshot.getName());
-        System.out.println("Location: " + screenshot.getLocation());
-        System.out.println("Date Created: " + screenshot.getDateCreated());
-        System.out.println("Last Modified: " + screenshot.getLastModified());
+        final int sidePanelSpace = 125;
+        screenshotNameTextField.setText(screenshot.getName());
+        screenshotLocationLabel.setText(screenshot.getLocation());
+        screenshotLocationLabel.setWrapText(true);
+        screenshotLocationLabel.setMaxWidth(sidePanelSpace);
+        screenshotCreatedLabel.setText(screenshot.getDateCreated());
+        screenshotCreatedLabel.setWrapText(true);
+        screenshotCreatedLabel.setMaxWidth(sidePanelSpace);
+        screenshotLastModifiedLabel.setText(screenshot.getLastModified());
+        screenshotLastModifiedLabel.setWrapText(true);
+        screenshotLastModifiedLabel.setMaxWidth(sidePanelSpace);
+        readjustLabels();
+    }
+
+    private void readjustLabels() {
+        dateCreatedLabel.setLayoutY(screenshotLocationLabel.getLayoutY() + screenshotLocationLabel.getHeight() + 20);
+        screenshotCreatedLabel.setLayoutY(screenshotLocationLabel.getLayoutY() + screenshotLocationLabel.getHeight() + 20);
+        lastModifiedLabel.setLayoutY(screenshotCreatedLabel.getLayoutY() + screenshotCreatedLabel.getHeight() + 20);
+        screenshotLastModifiedLabel.setLayoutY(screenshotCreatedLabel.getLayoutY() + screenshotCreatedLabel.getHeight() + 20);
+        System.out.println(screenshotLocationLabel.getHeight());
     }
 
     private void doubleClickHandler(MouseEvent mouseEvent, BorderPane borderPane, ScreenshotImageView screenshotImageView) {
