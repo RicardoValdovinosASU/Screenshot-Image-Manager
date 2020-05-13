@@ -1,9 +1,11 @@
 package eventhandlers;
 
 import groups.GroupImageView;
+import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 
 // TODO: Finish
 public class GroupClickEvent {

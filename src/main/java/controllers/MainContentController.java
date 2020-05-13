@@ -173,7 +173,7 @@ public class MainContentController implements Initializable {
         Screenshot screenshot = screenshotImageView.getScreenshot();
         final int sidePanelSpace = 125;
         screenshotNameTextField.setText(screenshot.getName());
-        screenshotLocationLabel.setText(screenshot.getLocation());
+        screenshotLocationLabel.setText(screenshot.getLocation().replace("file:", ""));
         screenshotLocationLabel.setWrapText(true);
         screenshotLocationLabel.setMaxWidth(sidePanelSpace);
         screenshotCreatedLabel.setText(screenshot.getDateCreated());
@@ -249,10 +249,14 @@ public class MainContentController implements Initializable {
         return groupImageView;
     }
 
-    private void addGroupToContent(ImageView groupImageView) {
+    private void addGroupToContent(GroupImageView groupImageView) {
         mainContentFlowPane.getChildren().clear();
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(groupImageView);
+        StackPane stackPane = new StackPane();
+        Label label = new Label(groupImageView.getName());
+        stackPane.getChildren().add(groupImageView);
+        stackPane.getChildren().add(label);
+        borderPane.setCenter(stackPane);
         addListenersToGroup(borderPane);
         mainContentFlowPane.getChildren().add(borderPane);
         ArrayList<Screenshot> temp = new ArrayList<>();
